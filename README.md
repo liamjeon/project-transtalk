@@ -1,2 +1,2 @@
-# project-transtalk
-프로젝트 - 번역톡
+# project-budongsan
+부동산 모의투자 서비스 프로젝트
