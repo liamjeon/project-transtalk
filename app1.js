@@ -10,7 +10,7 @@ const session = require("express-session");
 const ColorHash = require('color-hash');
 
 const webSocket = require("./socket.js");
-const { sequelize } = require("./models");
+const { sequelize } = require("./models/models");
 const indexRouter = require("./routes/index.js");
 
 dotenv.config();

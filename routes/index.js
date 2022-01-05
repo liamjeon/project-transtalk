@@ -1,7 +1,7 @@
 const express = require("express");
 
-const { Room } = require("../models");
-const { Chat } = require("../models");
+const { Room } = require("../models/models");
+const { Chat } = require("../models/models");
 
 const router = express.Router();
 
