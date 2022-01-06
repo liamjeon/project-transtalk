@@ -16,6 +16,7 @@ module.exports = () => {
   //user --> req.user에 저장
   //매 요청마다 실행
   //id : 세션에 저장했던 id
+  //accessToken : 카카로에서 발급해준 accessToken 로그아웃때 이용한다.
   passport.deserializeUser((user, done) => {
     console.log("Call deserializeUser");
     User.findOne({ where: { id: user.id } })

@@ -7,6 +7,7 @@ const { isLoggedIn, isNotLoggedIn } = require("../../middlewares/auth.middleware
 
 // const userController =  UserController();
 // router.post('/join', userController.create);
+router.get("/",isNotLoggedIn);
 
 router.get("/kakao",isNotLoggedIn, passport.authenticate("kakao"));
 router.get(
@@ -15,11 +16,9 @@ router.get(
     failureRedirect: "/",
   }),
   (req, res) => {
-    // console.log(req.session);
-    res.sendStatus(200); //로그인성공
+    res.status(200).json({message:"로그인 성공", sessionId:req.sessionID}); //로그인성공
   }
 );
-
 
 router.get("/kakao/logout", isLoggedIn, async (req, res, next) => {
   try {

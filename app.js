@@ -6,6 +6,8 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const session = require("express-session");
 const morgan = require("morgan");
+const redis = require("redis");
+const RedisStore = require("connect-redis")(session);
 const passportConfig = require("./passport/index.js");
 const { sequelize } = require("./models/models");
 const userRouter = require("./routes/user/user.route.js");
@@ -14,6 +16,14 @@ dotenv.config();
 
 async function startServer() {
   const app = express();
+
+  //Todo
+  //Redis 적용
+  //connect-reids는 express-session에 의존성 있음
+  const redisClient = redis.createClient({
+    url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
+    password: process.env.REDIS_PASSWORD,
+  });
 
   //moduels
   passportConfig();
@@ -29,6 +39,7 @@ async function startServer() {
         httpOnly: true,
         secure: false,
       },
+      // store: new RedisStore({ client: redisClient }),
     })
   );
   app.use(passport.initialize()); //req 에 passport 설정 넣음
@@ -52,7 +63,7 @@ async function startServer() {
 
   //Server
   await sequelize.sync({
-    force: false,
+    force: true,
   });
 
   console.log("Server is started!");
