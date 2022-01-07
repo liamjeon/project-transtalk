@@ -44,13 +44,10 @@ async function startServer() {
   );
   app.use(passport.initialize()); //req 에 passport 설정 넣음
   app.use(passport.session()); //req.session에 passport 정보 저장, passport.deserializeUser 호출
+  app.use(cors());
 
   //라우터
   app.use("/auth", userRouter);
-  app.use("/", (req, res, next) => {
-    // console.log(req.user.info);
-    // console.log(req.user.accessToken);
-  });
 
   //예외 처리
   app.use((req, res, next) => {
