@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Transrequest extends Model {
+  class Request extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,9 +11,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.hasMany(models.Estimate, {foreignKey:'requestId'});
+      this.belongsTo(models.User, {foreignKey: 'clientId'});
     }
   };
-  Transrequest.init({
+  Request.init({
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     field: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -66,10 +72,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: true,
     },
+    translatorId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
 
   }, {
     sequelize,
-    modelName: 'Transrequest',
+    modelName: 'Request',
   });
-  return Transrequest;
+  return Request;
 };

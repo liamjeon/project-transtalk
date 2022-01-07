@@ -11,6 +11,7 @@ const RedisStore = require("connect-redis")(session);
 const passportConfig = require("./passport/index.js");
 const { sequelize } = require("./models/models");
 const userRouter = require("./routes/user/user.route.js");
+const requestRouter = require('./routes/request/request.route.js');
 
 dotenv.config();
 
@@ -48,6 +49,7 @@ async function startServer() {
 
   //라우터
   app.use("/auth", userRouter);
+  app.use("/api/request", requestRouter);
 
   //예외 처리
   app.use((req, res, next) => {
@@ -60,7 +62,7 @@ async function startServer() {
 
   //Server
   await sequelize.sync({
-    force: true,
+    force: false,
   });
 
   console.log("Server is started!");
