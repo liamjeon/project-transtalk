@@ -6,8 +6,8 @@ const RequestController = require('./request.controller.js');
 const requestController = new RequestController();
 
 router.post('/', requestController.htmlCreateRequest);
-router.get('/list', requestController.htmlGetRequestList);
-router.get('/list/:requestId', requestController.htmlGetRequestById)
+router.get('/list', requestController.htmlGetRequestListById);
+router.get('/list/:requestId', requestController.htmlGetEstimateByRequestId);
 
 module.exports = router;
 

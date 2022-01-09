@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.hasMany(models.Request, {foreignKey: 'clientId'});
-      this.hasOne(models.TranslatorProfile, {foreignKey: 'translatorId'});
+      this.hasOne(models.Profile, {foreignKey: 'translatorId'});
+      this.hasMany(models.Estimate, {foreignKey: 'translatorId'});
     }
   };
   User.init({
@@ -30,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull : false,
     },
     provider:{
+      type : DataTypes.STRING,
+      allowNull : false,
+    },
+    approve:{
       type : DataTypes.STRING,
       allowNull : false,
     }

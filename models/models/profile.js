@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class TranslatorProfile extends Model {
+  class Profile extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,24 +11,29 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.User, {foreignKey: 'userId'});
+      this.belongsTo(models.User, {foreignKey: 'translatorId'});
     }
   };
-  TranslatorProfile.init({
+  Profile.init({
     name: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     career: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     profileUrl: {
       type: DataTypes.STRING,
-    },
+      // allowNull: false,
+    },  
     language: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     introduce: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     totalTrans: {
       type: DataTypes.INTEGER,
@@ -44,16 +49,19 @@ module.exports = (sequelize, DataTypes) => {
     },
     taxPossible: {
       type: DataTypes.BOOLEAN,
+      allowNull: false,
     },
     cashPossible: {
       type: DataTypes.BOOLEAN,
+      allowNull: false,
     },
     isBusiness: {
       type: DataTypes.BOOLEAN,
+      allowNull: false,
     },
   }, {
     sequelize,
-    modelName: 'TranslatorProfile',
+    modelName: 'Profile',
   });
-  return TranslatorProfile;
+  return Profile;
 };

@@ -4,8 +4,11 @@ class RequestRepository {
   async create(request) {
     return Request.create(request);
   }
-  async getByStatus(userId) {
+  async getByStatusAndId(userId) {
     return Request.findAll({ where: { status: "ready", clientId: userId } });
+  }
+  async getByStatus(status) {
+    return Request.findAll({ where: { status } });
   }
   async getById(id) {
     return Request.findByPk(id);

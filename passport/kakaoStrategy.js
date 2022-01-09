@@ -32,6 +32,7 @@ module.exports = () => {
               snsId: profile.id,
               auth: "client",
               provider: "kakao",
+              approve: false,
             });
             done(null, { userInfo: newUser, accessToken });
           }

@@ -12,6 +12,8 @@ const passportConfig = require("./passport/index.js");
 const { sequelize } = require("./models/models");
 const userRouter = require("./routes/user/user.route.js");
 const requestRouter = require('./routes/request/request.route.js');
+const estimateRouter = require('./routes/estimate/estimate.route.js');
+const profileRouter = require('./routes/profile/profile.route.js');
 
 dotenv.config();
 
@@ -50,10 +52,13 @@ async function startServer() {
   //라우터
   app.use("/auth", userRouter);
   app.use("/api/request", requestRouter);
+  app.use("/api/estimate", estimateRouter);
+  app.use("/api/translator", profileRouter);
 
   //예외 처리
   app.use((req, res, next) => {
-    res.sendStatus(404);
+    const error = `${req.method} ${req.url} 라우터가 없습니다`;
+    res.status(404).json(error);
   });
   app.use((error, req, res, next) => {
     console.error(error);
