@@ -26,6 +26,10 @@ class EstimateRepository {
     return Estimate.findAll({ where: { translatorId } });
   }
 
+  async getByRequestIdAndTranslatorId(requestId, translatorId) {
+    return Estimate.findOne({ where: { requestId, translatorId } });
+  }
+
   //RequestId를 키로 견적과 견적을 보낸 번역가 정보를 리턴
   async getAllByRequestId(requestId) {
     return Estimate.findAll({

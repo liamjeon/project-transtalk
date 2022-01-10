@@ -10,6 +10,10 @@ class RequestRepository {
   async getByStatus(status) {
     return Request.findAll({ where: { status } });
   }
+  async getByTranslatorId(translatorId) {
+    return Request.findAll({ where: { translatorId } });
+  }
+
   async getById(id) {
     return Request.findByPk(id);
   }

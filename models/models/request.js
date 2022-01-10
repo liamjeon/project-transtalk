@@ -44,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    confirmedTranslaotr: {
+    confirmedTranslaotr: { //확정된 번역가 이름
       type: DataTypes.STRING,
       allowNull: true,
     },
