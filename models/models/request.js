@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.hasMany(models.Estimate, {foreignKey:'requestId'});
       this.belongsTo(models.User, {foreignKey: 'clientId'});
+      this.hasOne(models.Review, {foreignKey: 'requestId'});
     }
   };
   Request.init({

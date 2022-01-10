@@ -21,12 +21,28 @@ class ProfileRepository {
       taxPossible,
       cashPossible,
       isBusiness,
-      translatorId
+      translatorId,
     });
   }
 
   async getByTranslatorId(translatorId) {
     return Profile.findOne({ where: { translatorId } });
+  }
+
+  async updateReviewInfo(translatorId, score) {
+    let totalReviews, avgReviews;
+
+    Profile.findOne({ where: { translatorId } }).then((profile) => {
+      totalReview = profile.totalReviews + 1;
+      avgReview =
+        (profile.avgReviews * profile.totalReviews + score) /
+        (profile.totalReviews + 1);
+    });
+
+    return Profile.update(
+      { totalReviews, avgReviews },
+      { where: { translatorId } }
+    );
   }
 
   async updateByTranslatorId(
@@ -40,7 +56,7 @@ class ProfileRepository {
     cashPossible,
     isBusiness
   ) {
-    return Profile.findOne({ where: { translatorId }}).then((profile) => {
+    return Profile.findOne({ where: { translatorId } }).then((profile) => {
       profile.name = name;
       profile.career = career;
       profile.language = language;

@@ -1,15 +1,16 @@
-const express = require("express");
-const path = require("path");
-const cors = require("cors");
-const dotenv = require("dotenv");
-const morgan = require("morgan");
-const helmet = require("helmet");
-const redis = require("redis");
-const { sequelize } = require("./models/models");
-const userRouter = require("./routes/user/user.route.js");
-const requestRouter = require("./routes/request/request.route.js");
-const estimateRouter = require("./routes/estimate/estimate.route.js");
-const profileRouter = require("./routes/profile/profile.route.js");
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const morgan = require('morgan');
+const helmet = require('helmet');
+const redis = require('redis');
+const { sequelize } = require('./models/models');
+const userRouter = require('./routes/user/user.route.js');
+const requestRouter = require('./routes/request/request.route.js');
+const estimateRouter = require('./routes/estimate/estimate.route.js');
+const profileRouter = require('./routes/profile/profile.route.js');
+const reviewRouter = require('./routes/review/review.route.js');
 
 dotenv.config();
 
@@ -24,13 +25,14 @@ async function startServer() {
   app.use(express.json());
   app.use(helmet());
   app.use(cors(corsOption));
-  app.use(morgan("dev"));
+  app.use(morgan('dev'));
 
   //라우터
-  app.use("/auth", userRouter);
-  app.use("/api/request", requestRouter);
-  app.use("/api/estimate", estimateRouter);
-  app.use("/api/translator", profileRouter);
+  app.use('/auth', userRouter);
+  app.use('/api/request', requestRouter);
+  app.use('/api/estimate', estimateRouter);
+  app.use('/api/translator', profileRouter);
+  app.use('/api/review', reviewRouter);
 
   //예외 처리
   app.use((req, res, next) => {
@@ -46,7 +48,7 @@ async function startServer() {
   await sequelize.sync({
     force: false,
   });
-  console.log("Server is started!");
+  console.log('Server is started!');
   const server = app.listen(3000);
   return server;
 }
