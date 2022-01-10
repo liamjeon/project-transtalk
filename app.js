@@ -1,14 +1,9 @@
 const express = require("express");
 const path = require("path");
-const passport = require("passport");
-const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const session = require("express-session");
 const morgan = require("morgan");
 const redis = require("redis");
-const RedisStore = require("connect-redis")(session);
-const passportConfig = require("./passport/index.js");
 const { sequelize } = require("./models/models");
 const userRouter = require("./routes/user/user.route.js");
 const requestRouter = require('./routes/request/request.route.js');
@@ -20,33 +15,11 @@ dotenv.config();
 async function startServer() {
   const app = express();
 
-  //Todo
-  //Redis 적용
-  //connect-reids는 express-session에 의존성 있음
-  const redisClient = redis.createClient({
-    url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
-    password: process.env.REDIS_PASSWORD,
-  });
-
   //moduels
-  passportConfig();
+  // passportConfig();
   app.use(cors());
   app.use(express.json());
   app.use(morgan("dev"));
-  app.use(cookieParser(process.env.COOKIE_SECRET));
-  app.use(
-    session({
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        httpOnly: true,
-        secure: false,
-      },
-      // store: new RedisStore({ client: redisClient }),
-    })
-  );
-  app.use(passport.initialize()); //req 에 passport 설정 넣음
-  app.use(passport.session()); //req.session에 passport 정보 저장, passport.deserializeUser 호출
   app.use(cors());
 
   //라우터

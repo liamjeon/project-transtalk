@@ -1,18 +1,32 @@
-//isAuthenticated : passport가 req에 추가한 메서드
+const jwt = require("jsonwebtoken");
+const UserRepository = require('../routes/user/user.data.js');
+const userRepository = new UserRepository();
 
-exports.isLoggedIn = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    next();
-  } else {
-    res.status(401).send("로그인 필요");
+const JWT_SECRETKEY = "transtalkJWT";
+
+module.exports = async (req, res, next) => {
+  const authHeader = req.get('Authorization');
+
+  console.log(authHeader);
+
+  if(!(authHeader && authHeader.startsWith('Bearer'))){
+      return res.sendStatus(401);
   }
+  const token = authHeader.split(' ')[1];
+
+  console.log(token);
+  jwt.verify(token, JWT_SECRETKEY, async(error, decoded)=>{
+      if(error){
+        console.log(error);
+
+          return res.sendStatus(401);
+      }
+      console.log(decoded.id);
+      const user = await userRepository.getByKakaoId(decoded.id);
+      if(!user){
+          return res.status(401);
+      }
+      res.locals.user = user;
+      next();
+  })
 };
-
-exports.isNotLoggedIn = (req, res, next) => {
-  if (!req.isAuthenticated()) {
-    next();
-  } else {
-    console.log(req.user.info.id);
-    res.status(401).send(`로그인한 상태입니다. 아이디: ${req.user.info.id}`);
-  }
-}

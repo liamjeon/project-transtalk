@@ -1,26 +1,69 @@
-const express = require("express");
-const passport = require("passport");
-
-// const UseRepository = require("./user.data.js");
-// const userRepository = userRepository();
-// const { User } = require("../../models/models");
+const jwt = require("jsonwebtoken");
+const qs = require("qs"); // 쿼리스트링 인코딩
+const axios = require("axios");
+const UserRepository = require("./user.data.js");
+const userRepository = new UserRepository();
 
 class UserController {
-  kakaoLogin(req, res, next) {
-    passport.authenticate("kakao");
+  async kakaoLogin(req, res, next) {
+    ///1. 인가 코드 요청
+    const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.KAKAO_KEY}&redirect_uri=${process.env.KAKAO_REDIRECT_URL}&response_type=code`;
+    res.redirect(kakaoAuthURL);
   }
 
-  kakaoCallback(req, res, next) {
-    return [
-      passport.authenticate("kakao", {
-        failureRedirect: "/",
-      }),
-      (req, res) => {
-        res
-          .status(200)
-          .json({ message: "로그인 성공", sessionId: req.sessionID }); //로그인성공
-      },
-    ];
+  async kakaoCallback(req, res) {
+    try {
+      //2. 토근 발행. 카카오서버는 인가 코드를 설정한 Callback URL로 Redirect 해준다.
+      const kakaoToken = await axios({
+        method: "POST",
+        url: "https://kauth.kakao.com/oauth/token",
+        headers: {
+          "content-type": "application/x-www-form-urlencoded",
+        },
+        data: qs.stringify({
+          grant_type: "authorization_code", //authorization_code로 고정
+          client_id: process.env.KAKAO_KEY, //앱 REST API 키
+          redirectUri: process.env.KAKAO_REDIRECT_URL, //인가 코드가 리다이렉트된 URI
+          code: req.query.code, //인가 코드 받기 요청으로 얻은 인가 코드
+        }),
+      });
+
+      // 3. 카오서버로 부터 받아온 AccessToken을 이용하여 Kakao 유저 데이터를 받음
+      const kakaoUser = await axios({
+        method: "get",
+        url: "https://kapi.kakao.com/v2/user/me",
+        headers: {
+          Authorization: `Bearer ${kakaoToken.data.access_token}`,
+          "content-type": "application/x-www-form-urlencoded;charset=utf-8",
+        },
+      });
+
+      // 4. JWT Token 생성 후 프론트에 전달.
+      const kakaoId = kakaoUser.data.id;
+      const exUser = await userRepository.getByKakaoId(kakaoId);
+      if (!exUser) {
+        //DB에 없는 유저라면 자동 회원가입
+        let userType,
+          approve,
+          type = "client";
+        if (type === "client") {
+          userType = "client";
+          approve = true;
+        } else {
+          userType = "translator";
+          approve = false;
+        }
+        await userRepository.create("미지정", kakaoId, type, "kakao", approve);
+      }
+
+      //5. JWT token 생성 후 
+      const jwtToken = jwt.sign({ id: kakaoId }, process.env.JWT_SECRETKEY, {
+        expiresIn: process.env.JWT_EXPRIERSDAYS,
+      });
+      return res.status(200).json({ token: jwtToken });
+    } catch (error) {
+      return res.sendStatus(401);
+    }
   }
 
   async kakaoLogout(req, res, next) {
@@ -45,3 +88,19 @@ class UserController {
 }
 
 module.exports = UserController;
+
+//Todo
+// try {
+//   await axios({
+//     method: "post",
+//     url: "https://kauth.kakao.com/oauth/authorize",
+//     params: {
+//       client_id: process.env.KAKAO_ID,
+//       redirect_uri: process.env.KAKAO_REDIRECT_URL,
+//       response_type: 'code',
+//     },
+//   });
+//   // res.redirect(kakaoAuthURL);
+// } catch (error) {
+//   console.error(error);
+// }

@@ -1,11 +1,12 @@
 const express = require('express');
-const router = express.Router();
-
 const ProfileController = require('./profile.controller.js');
+const isAuth = require('../../middlewares/auth.middleware.js');
+const router = express.Router();
 const profileController = new ProfileController();
 
-router.post('/mypage',profileController.htmlCreateProfile);
-router.get('/mypage',profileController.htmlGetProfile);
-router.post('/mypage/update',profileController.htmlUpdateProfile);
+
+router.post('/mypage',isAuth, profileController.htmlCreateProfile);
+router.get('/mypage',isAuth, profileController.htmlGetProfile);
+router.post('/mypage/update',isAuth, profileController.htmlUpdateProfile);
 
 module.exports = router;
