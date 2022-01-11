@@ -22,6 +22,10 @@ class ProfileRepository {
       cashPossible,
       isBusiness,
       translatorId,
+      totalTrans: 0, //초기화 0
+      totalReviews: 0, //초기화 0
+      totalPrice: 0, //초기화 0
+      avgReviews: 0, //초기화 0
     });
   }
 
@@ -30,14 +34,16 @@ class ProfileRepository {
   }
 
   async updateReviewInfo(translatorId, score) {
-    let totalReviews, avgReviews;
+    let totalReviews = 0,
+      avgReviews = 0;
 
-    Profile.findOne({ where: { translatorId } }).then((profile) => {
-      totalReview = profile.totalReviews + 1;
-      avgReview =
-        (profile.avgReviews * profile.totalReviews + score) /
-        (profile.totalReviews + 1);
-    });
+
+    const profile = await Profile.findOne({ where: { translatorId } });
+    totalReviews = profile.totalReviews + 1;
+    //리뷰 평균 점수는 소숫점 첫째자리
+    avgReviews =
+      ((profile.avgReviews * profile.totalReviews + score) /
+      (profile.totalReviews + 1)).toFixed(1);
 
     return Profile.update(
       { totalReviews, avgReviews },

@@ -10,6 +10,7 @@ class ReviewController {
   async htmlCreateReview(req, res, next) {
     const requestId = req.params.requestId;
     const { score, comment } = req.body;
+    const clientId = res.locals.user.id;
     const reviewDate = getDateFormat();
 
     try {
@@ -23,11 +24,13 @@ class ReviewController {
         score,
         comment,
         reviewDate,
+        clientId,
         requestId,
         translatorId
       );
       //번역가 프로필정보 > 리뷰 수, 리뷰 평균 점수 업데이트
-      await profileRepository.updateByTranslatorId(translatorId, score);
+      await profileRepository.updateReviewInfo(translatorId, score);
+      
 
       return res.status(201).json(result);
     } catch (error) {
@@ -36,9 +39,9 @@ class ReviewController {
   }
 
   async htmlGetReview(req, res, next) {
-    const requestId = req.parmas.requestId;
+    const requestId = req.params.requestId;
     try {
-      const request = requestRepository.getById(requestId);
+      const request = await requestRepository.getById(requestId);
       const translatorId = request.translatorId;
 
       const result = await reviewRepository.getAllByTranslatorId(translatorId);

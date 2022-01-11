@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
     },
     avgReviews: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.FLOAT,
     },
     taxPossible: {
       type: DataTypes.BOOLEAN,

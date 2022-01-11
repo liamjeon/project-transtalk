@@ -27,7 +27,11 @@ module.exports = (sequelize, DataTypes) => {
     reviewDate: {
       type: DataTypes.STRING,
       allowNull: false,
-    }
+    },
+    clientId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
   }, {
     sequelize,
     modelName: 'Review',

@@ -1,7 +1,7 @@
 const RequestRepository = require("./request.data.js");
 const requestRepository = new RequestRepository();
 
-const EstimateRepository = require('../estimate/estimate.data.js');
+const EstimateRepository = require("../estimate/estimate.data.js");
 const estimateRepository = new EstimateRepository();
 
 class RequestController {
@@ -22,7 +22,7 @@ class RequestController {
         isText: req.body.isText,
         clientId,
       });
-      return res.status(201).json({data: result});
+      return res.status(201).json({ data: result });
     } catch (error) {
       return res.sendStatus(404);
     }
@@ -33,7 +33,7 @@ class RequestController {
       //   const userId = req.locals.user.id;
       const userId = 1; //임시
       const result = await requestRepository.getByStatusAndId(userId);
-      return res.status(200).json({data: result});
+      return res.status(200).json({ data: result });
     } catch (error) {
       return res.sendStatus(404);
     }
@@ -43,7 +43,7 @@ class RequestController {
     try {
       const status = "ready";
       const result = await requestRepository.getByStatus(status);
-      return res.status(200).json({data: result});
+      return res.status(200).json({ data: result });
     } catch (error) {
       return res.sendStatus(404);
     }
@@ -54,8 +54,22 @@ class RequestController {
     const requestId = req.params.requestId;
     console.log(requestId);
     try {
-      const result = await estimateRepository.getAllByRequestId(requestId);
-      return res.status(200).json({data: result});
+      let result = await estimateRepository.getAllByRequestId(requestId);
+      //데이터 가공 
+      const estimates = result.map((estimate) => {
+        estimate = {
+          price: estimate.price,
+          confirmedDate: estimate.confirmedDate,
+          comment: estimate.comment,
+          sendDate: estimate.sendDate,
+          translatorId: estimate.translatorId,
+          requestId: estimate.requestId,
+          ...estimate.User.Profile.dataValues,
+        };
+        return estimate;
+      });
+
+      return res.status(200).json({ data: estimates });
     } catch (error) {
       return res.sendStatus(404);
     }

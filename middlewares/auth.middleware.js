@@ -19,9 +19,9 @@ async function isAuthForClient(req, res, next) {
     if (!user) {
       return res.status(401).json({message: "등록된 아이디가 없습니다."});
     }
-    if (user.auth !== "client") {
-      return res.status(403).json({ message: "클라이언트가 아닙니다." });
-    }
+    // if (user.auth !== "client") {
+    //   return res.status(403).json({ message: "클라이언트가 아닙니다." });
+    // }
     res.locals.user = user;
     next();
   });
@@ -40,9 +40,9 @@ async function isAuthForTranslaotr(req, res, next) {
     if (!user) {
       return res.status(401).json({message: "등록된 아이디가 없습니다."});
     }
-    if (user.auth !== "translator") {
-      return res.status(403).json({ message: "번역가가 아닙니다." });
-    }
+    // if (user.auth !== "translator") {
+    //   return res.status(403).json({ message: "번역가가 아닙니다." });
+    // }
     if (user.approve === false) {
       return res.status(403).json({ message: "번역가 승인전 입니다." });
     }
