@@ -8,4 +8,8 @@ router.get("/kakao/translator",userController.setAuthToTranslator, userControlle
 router.get("/kakao/callback", userController.kakaoCallback);
 router.get("/kakao/logout", userController.kakaoLogout);
 
+//개발자
+// router.get("dev/signup/client", )
+// router.get("dev/signup/translator", )
+
 module.exports = router;

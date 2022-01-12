@@ -54,9 +54,9 @@ class RequestController {
     const requestId = req.params.requestId;
     console.log(requestId);
     try {
-      let result = await estimateRepository.getAllByRequestId(requestId);
+      let estimates = await estimateRepository.getAllByRequestId(requestId);
       //데이터 가공
-      const estimates = result.map((estimate) => {
+      const result = estimates.map((estimate) => {
         estimate = {
           estimateId: estimate.id,
           price: estimate.price,
@@ -70,7 +70,7 @@ class RequestController {
         return estimate;
       });
 
-      return res.status(200).json({ data: estimates });
+      return res.status(200).json({ data: result });
     } catch (error) {
       return res.sendStatus(404);
     }
@@ -95,6 +95,27 @@ class RequestController {
       return res.status(200).json({ data: estimate });
     } catch (error) {
       return res.sendStatus(404);
+    }
+  }
+
+  async htmlUpdateStatusToDone(req, res, next) {
+    const requestId = req.params.requestId;
+    const translatorId = res.locals.user.id;
+    try {
+      let request = await requestRepository.getById(requestId);
+      //내가 번역 작업중인 번역요청이 아니라면
+      if(request.translatorId !== translatorId) {
+        return res.status(403).json({ message: "내가 진행중인 번역 작업이 아닙니다." });
+      }
+      //번역 요청 상태 done으로 업데이트
+      let result = await requestRepository.updateStatus(
+        "done",
+        translatorId,
+        requestId
+      );
+      return res.status(200).json({ message: "번역 작업 완료(done)" });
+    } catch (error) {
+      return res.sendStatus(400);
     }
   }
 }

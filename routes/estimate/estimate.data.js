@@ -1,8 +1,20 @@
-const { Estimate, User, Profile, Review } = require("../../models/models");
-
+const {
+  Estimate,
+  User,
+  Profile,
+  Request,
+  Review,
+} = require("../../models/models");
 
 class EstimateRepository {
-  async create(price, confirmedDate, comment, sendDate, requestId, translatorId) {
+  async create(
+    price,
+    confirmedDate,
+    comment,
+    sendDate,
+    requestId,
+    translatorId
+  ) {
     return Estimate.create({
       price,
       confirmedDate,
@@ -26,6 +38,18 @@ class EstimateRepository {
 
   async getByRequestIdAndTranslatorId(requestId, translatorId) {
     return Estimate.findOne({ where: { requestId, translatorId } });
+  }
+
+  async getAllWithRequestByTranslatorId(translatorId) {
+    return Estimate.findAll({
+      where: { translatorId },
+      include: [
+        {
+          model: Request,
+          include: [{ model: User }],
+        },
+      ],
+    });
   }
 
   //RequestId를 키로 모든 견적과 견적을 보낸 번역가 프로필 정보를 가져옴
@@ -111,6 +135,7 @@ class EstimateRepository {
   async getById(id) {
     return Estimate.findByPk(id);
   }
+
 }
 
 module.exports = EstimateRepository;

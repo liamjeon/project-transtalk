@@ -36,7 +36,7 @@ async function startServer() {
 
   //예외 처리
   app.use((req, res, next) => {
-    const error = `${req.method} ${req.url} 라우터가 없습니다`;
+    const error = `${req.method} ${req.url} 라우터가 존재하지 않습니다.`;
     res.status(404).json(error);
   });
   app.use((error, req, res, next) => {

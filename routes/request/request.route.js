@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { isAuthForClient } = require("../../middlewares/auth.middleware.js");
+const { isAuthForClient, isAuthForTranslaotr } = require("../../middlewares/auth.middleware.js");
 
 const RequestController = require("./request.controller.js");
 const requestController = new RequestController();
@@ -22,5 +22,14 @@ router.get(
   "/list/:requestId/:estimateId",
   requestController.htmlGetEstimateByRequestId
 );
+
+//번역 작업완료,  번역요청 상태를 done으로 변경 
+router.post(
+  "/status/:requestId",
+  isAuthForTranslaotr,
+  // isProfile,
+  requestController.htmlUpdateStatusToDone
+);
+
 
 module.exports = router;

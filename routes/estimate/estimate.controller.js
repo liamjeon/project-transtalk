@@ -60,7 +60,15 @@ class EstimateController {
     try {
       //   const userId = req.locals.user.id;
       const requestId = req.params.requestId;
+      const translatorId = res.locals.user.id;
       const request = await requestRepository.getById(requestId);
+      const esmimate = await estimateRepository.getByRequestIdAndTranslatorId(
+        requestId,
+        translatorId
+      );
+      console.log(esmimate);
+
+      //필요 정보들 필터링, 개인 정보 제외(email, phoneNumber)
       const result = {
         requestId: request.id,
         field: request.field,
@@ -71,32 +79,37 @@ class EstimateController {
         needs: request.needs,
         youtubeUrl: request.youtubeUrl,
         isText: request.isText,
+        status: request.status,
+        ...esmimate.dataValues,
       };
       return res.status(200).json({ data: result });
     } catch (error) {
       return res.sendStatus(404);
     }
   }
-  //내 번역 리스트
-  // 1. 내가 견적을 보냈는데 아직 확정이 안된것.
-  // 2. 내가 이미 진행중이나, 완료된 것.
-  // 3. 견적을 보냈으나, 다른 사람으로 확정된 것.
-  // 4. 만료 기간이 지난것
+
+  // <번역 상태>
+  // ready : 견적 받는중(견적을 보냈는데 아직 확정이 안된)
+  // processing : 번역 진행 중
+  // done : 종료
+  // passdate: 확정 날짜(3일)를 넘김
   async htmlGetMyTransList(req, res, next) {
     const translatorId = res.locals.user.id;
     try {
-      const requests = await requestRepository.getByStatus("ready");
+      const requests = await requestRepository.getByStatus("ready"); //상태가 "ready"인 모든 번역 요청
       const myEstimate = await estimateRepository.getAllByTranslatorId(
+        //내가 견적 보낸 모든 견적요청
         translatorId
       );
-      //상태가 "Ready"인 번역요청 리스트에서 내가 견적을 보낸견적만 받아옴
+      //상태가 "Ready"인 번역요청 리스트에서 내가 견적을 보낸요청만 받아옴
       const readyRequets = [];
       myEstimate.forEach((esmimate) => {
         requests.forEach((request) => {
           if (esmimate.requestId === request.id) readyRequets.push(request);
         });
       });
-      const confirmedRequets = await requestRepository.getByTranslatorId(
+      //번역가가 본인으로 확정된 번역 요청리스트
+      const confirmedRequets = await requestRepository.getFilterByTranslatorId(
         translatorId
       );
       const result = [...readyRequets, ...confirmedRequets];

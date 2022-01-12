@@ -20,7 +20,7 @@ class ProfileController {
       console.log(exProfile);
       if (exProfile) {
         return res
-          .status(404)
+          .status(403)
           .json({ message: "이미 프로필을 등록하였습니다." });
       }
 
@@ -37,7 +37,7 @@ class ProfileController {
       );
       return res.status(201).json({ data: result });
     } catch (error) {
-      return res.status(404);
+      return res.status(404); 
     }
   }
 
