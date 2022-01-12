@@ -60,7 +60,18 @@ class EstimateController {
     try {
       //   const userId = req.locals.user.id;
       const requestId = req.params.requestId;
-      const result = await requestRepository.getById(requestId);
+      const request = await requestRepository.getById(requestId);
+      const result = {
+        requestId: request.id,
+        field: request.field,
+        beforeLanguage: request.beforeLanguage,
+        afterLanguage: request.afterLanguage,
+        deadline: request.deadline,
+        fileUrl: request.fileUrl,
+        needs: request.needs,
+        youtubeUrl: request.youtubeUrl,
+        isText: request.isText,
+      };
       return res.status(200).json({ data: result });
     } catch (error) {
       return res.sendStatus(404);
