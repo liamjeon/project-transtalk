@@ -9,7 +9,7 @@ router.get("/kakao/callback", userController.kakaoCallback);
 router.get("/kakao/logout", userController.kakaoLogout);
 
 //개발자
-// router.get("dev/signup/client", )
-// router.get("dev/signup/translator", )
+router.post("/dev/signup", userController.devSignup);
+router.get("/dev/login", userController.devLogin);
 
 module.exports = router;

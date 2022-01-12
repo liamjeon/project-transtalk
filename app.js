@@ -30,7 +30,7 @@ async function startServer() {
   app.use(morgan('dev'));
 
   //라우터
-  app.use('/auth', userRouter);
+  app.use('/api/auth', userRouter);
   app.use('/api/request', requestRouter);
   app.use('/api/estimate', estimateRouter);
   app.use('/api/translator', profileRouter);
