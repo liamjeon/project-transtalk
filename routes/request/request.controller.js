@@ -64,6 +64,7 @@ class RequestController {
           sendDate: estimate.sendDate,
           translatorId: estimate.translatorId,
           requestId: estimate.requestId,
+          totalTrans: estimate.totalTrans,
           ...estimate.User.Profile.dataValues,
         };
         return estimate;
