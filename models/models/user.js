@@ -12,9 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.hasMany(models.Request, {foreignKey: 'clientId'});
-      this.hasOne(models.Profile, {foreignKey: 'translatorId'});
       this.hasMany(models.Estimate, {foreignKey: 'translatorId'});
       this.hasMany(models.Review, {foreignKey: 'translatorId'});
+      this.hasMany(models.Chat, {foreignKey: 'userId'});
+      this.hasOne(models.Profile, {foreignKey: 'translatorId'});
     }
   };
   User.init({
