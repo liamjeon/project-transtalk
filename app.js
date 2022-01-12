@@ -11,6 +11,8 @@ const requestRouter = require('./routes/request/request.route.js');
 const estimateRouter = require('./routes/estimate/estimate.route.js');
 const profileRouter = require('./routes/profile/profile.route.js');
 const reviewRouter = require('./routes/review/review.route.js');
+const roomRouter = require('./routes/room/room.route.js');
+const chatRouter = require('./routes/chat/chat.route.js');
 
 dotenv.config();
 
@@ -33,6 +35,8 @@ async function startServer() {
   app.use('/api/estimate', estimateRouter);
   app.use('/api/translator', profileRouter);
   app.use('/api/review', reviewRouter);
+  app.use('/api/chatroom', roomRouter);
+  app.use('/api/chatroom/chat', chatRouter);
 
   //예외 처리
   app.use((req, res, next) => {

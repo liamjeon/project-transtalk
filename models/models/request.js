@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Estimate, {foreignKey:'requestId'});
       this.belongsTo(models.User, {foreignKey: 'clientId'});
       this.hasOne(models.Review, {foreignKey: 'requestId'});
+      this.hasOne(models.Room, {foreignKey: 'requestId'});
     }
   };
   Request.init({

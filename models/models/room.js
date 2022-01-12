@@ -12,13 +12,22 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.hasMany(models.Chat, {foreignKey: "roomId"});
+      this.belongsTo(models.Request, {foreignKey: "requestId"});
     }
   };
   Room.init({
-    title: DataTypes.STRING,
-    max: DataTypes.INTEGER,
-    owner: DataTypes.STRING,
-    password: DataTypes.STRING,
+    lastChatDate:{
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    isReadClient:{
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    isReadTranslator:{
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
   }, {
     sequelize,
     modelName: 'Room',
