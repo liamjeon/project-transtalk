@@ -8,7 +8,7 @@ const {
 
 class EstimateRepository {
   async create(
-    price,
+    offerPrice,
     confirmedDate,
     comment,
     sendDate,
@@ -16,7 +16,7 @@ class EstimateRepository {
     translatorId
   ) {
     return Estimate.create({
-      price,
+      offerPrice,
       confirmedDate,
       comment,
       sendDate,
@@ -58,7 +58,7 @@ class EstimateRepository {
       where: { requestId },
       attributes: [
         "id",
-        "price",
+        "offerPrice",
         "confirmedDate",
         "comment",
         "sendDate",
@@ -98,7 +98,7 @@ class EstimateRepository {
       where: { id: estimateId },
       attributes: [
         "id",
-        "price",
+        "offerPrice",
         "confirmedDate",
         "comment",
         "sendDate",

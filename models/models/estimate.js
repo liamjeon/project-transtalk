@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Estimate.init({
-    price: {
+    offerPrice: {
       type: DataTypes.INTEGER,
     },
     confirmedDate: {

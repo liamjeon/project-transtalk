@@ -8,7 +8,7 @@ class EstimateController {
   async htmlCreateEstimate(req, res, next) {
     const requestId = req.params.requestId;
     const translatorId = res.locals.user.id;
-    const { price, confirmedDate, comment } = req.body;
+    const { offerPrice, confirmedDate, comment } = req.body;
     const sendDate = getDateFormat();
 
     //이미 견적을 보냈을 경우 400리턴
@@ -20,7 +20,7 @@ class EstimateController {
 
     try {
       const result = await estimateRepository.create(
-        price,
+        offerPrice,
         confirmedDate,
         comment,
         sendDate,

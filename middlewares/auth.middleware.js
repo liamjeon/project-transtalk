@@ -17,7 +17,7 @@ async function isAuthForClient(req, res, next) {
     }
     const user = await userRepository.getByKakaoId(decoded.id);
     if (!user) {
-      return res.status(401).json({message: "등록된 아이디가 없습니다."});
+      return res.status(401).json({message: "로그인이 필요합니다"});
     }
     if (user.auth !== "client") {
       return res.status(403).json({ message: "클라이언트가 아닙니다." });
@@ -33,13 +33,13 @@ async function isAuthForTranslaotr(req, res, next) {
 
   jwt.verify(token, JWT_SECRETKEY, async (error, decoded) => {
     if (error) {
-      console.log(error);
-      return res.sendStatus(401);
+      console.log(error); 
     }
     const user = await userRepository.getByKakaoId(decoded.id);
     if (!user) {
-      return res.status(401).json({message: "등록된 아이디가 없습니다."});
+      return res.status(401).json({message: "로그인이 필요합니다"});
     }
+    console.log(user.id, user.auth);
     if (user.auth !== "translator") {
       return res.status(403).json({ message: "번역가가 아닙니다." });
     }

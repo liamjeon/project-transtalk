@@ -23,6 +23,9 @@ class RoomRepository {
         {
           model: Request,
           where: { clientId },
+          attributes:[
+            'confirmedTranslaotr','status',
+          ]
         },
       ],
     });
@@ -34,6 +37,9 @@ class RoomRepository {
         {
           model: Request,
           where: { translatorId },
+          attributes:[
+            'confirmedTranslaotr','status',
+          ]
         },
       ],
     });

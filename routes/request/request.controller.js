@@ -58,7 +58,7 @@ class RequestController {
       const result = estimates.map((estimate) => {
         estimate = {
           estimateId: estimate.id,
-          price: estimate.price,
+          offerPrice: estimate.offerPrice,
           confirmedDate: estimate.confirmedDate,
           comment: estimate.comment,
           sendDate: estimate.sendDate,
@@ -82,7 +82,7 @@ class RequestController {
       let result = await estimateRepository.getByEsimateId(estimateId);
       //데이터 가공
       const estimate = {
-        price: result.price,
+        offerPrice: result.offerPrice,
         confirmedDate: result.confirmedDate,
         comment: result.comment,
         sendDate: result.sendDate,
