@@ -1,4 +1,4 @@
-const { Chat } = require("../../models/models");
+const { Chat, User, Room, Request } = require("../../models/models");
 
 class ChatRepository {
   async create(userId, chat, roomId) {
@@ -6,7 +6,25 @@ class ChatRepository {
   }
 
   async getByRoomId(roomId) {
-    return Chat.findAll({ where: roomId });
+    return Chat.findAll({
+      where: { roomId },
+      // include: [
+      //   {
+      //     model: User,
+      //     attributes: ["auth", "username"],
+      //   },
+      //   {
+      //     model: Room,
+      //     attributes: ['requestId'],
+      //     include: [
+      //       {
+      //         model: Request,
+      //         attributes: ['clientId','translatorId'],
+      //       },
+      //     ],
+      //   },
+      // ],
+    });
   }
 }
 

@@ -1,5 +1,11 @@
 const ChatRepository = require("./chat.data.js");
+const RequestRepository = require('../request/request.data.js');
+const RoomRepository = require("../room/room.data.js");
+
 const chatRepository = new ChatRepository();
+const requestRepository = new RequestRepository();
+const roomRepository = new RoomRepository();
+
 
 class ChatController {
   async htmlCreate(req, res, next) {
@@ -15,10 +21,10 @@ class ChatController {
   }
 
   async htmlGetAll(req, res, next) {
-    const { roomId } = req.body;
+    const roomId = req.params.roomId;
     try {
-      const result = await chatRepository.getByRoomId(roomId);
-      return res.status(201).json(result);
+      const result = await chatRepository.getByRoomId(14);
+      return res.status(201).json({ data: result });
     } catch (error) {
       return res.sendStatus(400);
     }

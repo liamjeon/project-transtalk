@@ -6,8 +6,7 @@ const estimateRepository = new EstimateRepository();
 
 class RequestController {
   async htmlCreateRequest(req, res, next) {
-    // const clientId = req.locals.user.id;
-    const clientId = 1; //임시
+    const clientId = res.locals.user.id;
     try {
       const result = await requestRepository.create({
         status: "ready",

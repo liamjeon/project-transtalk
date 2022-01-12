@@ -1,8 +1,20 @@
-const { Room, Request } = require("../../models/models");
+const { Room, Request, Profile } = require("../../models/models");
 
 class RoomRepository {
   async create(requestId) {
-    return Room.create(requestId);
+    const lastChatDate = 0;
+    const isReadClient = true;
+    const isReadTranslator = true;
+    return Room.create({
+      requestId,
+      lastChatDate,
+      isReadClient,
+      isReadTranslator,
+    });
+  }
+
+  async getByRequestId(requestId) {
+    return Room.findOne({ where: { requestId } });
   }
 
   async getByClientId(clientId) {

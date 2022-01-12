@@ -11,7 +11,7 @@ const {
   } = require("../../middlewares/auth.middleware.js");
 
 router.post('/:requestId',isAuthBoth, roomController.htmlCreate);
-router.get('/',isAuthBoth, roomController.htmlGetAllForClient);
-router.get('/',isAuthBoth, roomController.htmlGetAllForTranslator);
+router.get('/client',isAuthBoth, roomController.htmlGetAllForClient);
+router.get('/translator',isAuthBoth, roomController.htmlGetAllForTranslator);
 
 module.exports = router;
