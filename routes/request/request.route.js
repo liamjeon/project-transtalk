@@ -15,7 +15,11 @@ router.get("/list",  requestController.htmlGetRequestListById);
 //견적 요청 리스트
 router.get(
   "/list/:requestId",
-  
+  requestController.htmlGetAllEstimateByRequestId
+);
+//견적 상세 정보
+router.get(
+  "/list/:requestId/:estimateId",
   requestController.htmlGetEstimateByRequestId
 );
 

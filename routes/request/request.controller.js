@@ -50,27 +50,49 @@ class RequestController {
   }
 
   //견적 리스트 클릭시 RequestId 에 해당하는 견적(Estimate) 리스트를 받아옴
-  async htmlGetEstimateByRequestId(req, res, next) {
+  async htmlGetAllEstimateByRequestId(req, res, next) {
     const requestId = req.params.requestId;
     console.log(requestId);
     try {
       let result = await estimateRepository.getAllByRequestId(requestId);
-      //데이터 가공 
+      //데이터 가공
       const estimates = result.map((estimate) => {
         estimate = {
+          estimateId: estimate.id,
           price: estimate.price,
           confirmedDate: estimate.confirmedDate,
           comment: estimate.comment,
           sendDate: estimate.sendDate,
           translatorId: estimate.translatorId,
           requestId: estimate.requestId,
-          totalTrans: estimate.totalTrans,
           ...estimate.User.Profile.dataValues,
         };
         return estimate;
       });
 
       return res.status(200).json({ data: estimates });
+    } catch (error) {
+      return res.sendStatus(404);
+    }
+  }
+
+  //견적 리스트 클릭시 RequestId 에 해당하는 견적(Estimate) 리스트를 받아옴
+  async htmlGetEstimateByRequestId(req, res, next) {
+    const estimateId = req.params.estimateId;
+    try {
+      let result = await estimateRepository.getByEsimateId(estimateId);
+      //데이터 가공
+      const estimate = {
+        price: result.price,
+        confirmedDate: result.confirmedDate,
+        comment: result.comment,
+        sendDate: result.sendDate,
+        translatorId: result.translatorId,
+        requestId: result.requestId,
+        ...result.User.Profile.dataValues,
+      };
+
+      return res.status(200).json({ data: estimate });
     } catch (error) {
       return res.sendStatus(404);
     }

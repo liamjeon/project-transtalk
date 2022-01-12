@@ -1,27 +1,29 @@
-const EstimateRepository = require('./estimate.data.js');
-const estimateRepository = new EstimateRepository();
-
-const RequestRepository = require('../request/request.data.js');
+const EstimateRepository = require("./estimate.data.js");
+const RequestRepository = require("../request/request.data.js");
 const requestRepository = new RequestRepository();
+const estimateRepository = new EstimateRepository();
+const { getDateFormat } = require("../../middlewares/middlewares.js");
 
 class EstimateController {
   async htmlCreateEstimate(req, res, next) {
     const requestId = req.params.requestId;
     const translatorId = res.locals.user.id;
     const { price, confirmedDate, comment } = req.body;
+    const sendDate = getDateFormat();
 
     //이미 견적을 보냈을 경우 400리턴
     const exEsimate = await estimateRepository.getByRequestIdAndTranslatorId(
       requestId,
       translatorId
     );
-    if (exEsimate) return res.status(400).json('이미 견적을 보냈습니다.');
+    if (exEsimate) return res.status(400).json("이미 견적을 보냈습니다.");
 
     try {
       const result = await estimateRepository.create(
         price,
         confirmedDate,
         comment,
+        sendDate,
         requestId,
         translatorId
       );
@@ -35,7 +37,7 @@ class EstimateController {
   async htmlGetRequestListByStatus(req, res, next) {
     const translatorId = res.locals.user.id;
     try {
-      const requests = await requestRepository.getByStatus('ready');
+      const requests = await requestRepository.getByStatus("ready");
       const myEstimate = await estimateRepository.getAllByTranslatorId(
         translatorId
       );
@@ -72,7 +74,7 @@ class EstimateController {
   async htmlGetMyTransList(req, res, next) {
     const translatorId = res.locals.user.id;
     try {
-      const requests = await requestRepository.getByStatus('ready');
+      const requests = await requestRepository.getByStatus("ready");
       const myEstimate = await estimateRepository.getAllByTranslatorId(
         translatorId
       );
