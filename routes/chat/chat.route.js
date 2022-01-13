@@ -9,6 +9,6 @@ const {
   } = require("../../middlewares/auth.middleware.js");
 
 router.post('/:roomId',isAuthBoth, chatController.htmlCreate);
-router.get('/:roomId',isAuthBoth, chatController.htmlGetAll);
+router.get('/:roomId', chatController.htmlGetAll);
 
 module.exports = router;

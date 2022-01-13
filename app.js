@@ -1,18 +1,18 @@
-const express = require('express');
-const path = require('path');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const morgan = require('morgan');
-const helmet = require('helmet');
-const redis = require('redis');
-const { sequelize } = require('./models/models');
-const userRouter = require('./routes/user/user.route.js');
-const requestRouter = require('./routes/request/request.route.js');
-const estimateRouter = require('./routes/estimate/estimate.route.js');
-const profileRouter = require('./routes/profile/profile.route.js');
-const reviewRouter = require('./routes/review/review.route.js');
-const roomRouter = require('./routes/room/room.route.js');
-const chatRouter = require('./routes/chat/chat.route.js');
+const express = require("express");
+const path = require("path");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const morgan = require("morgan");
+const helmet = require("helmet");
+const redis = require("redis");
+const nunjucks = require("nunjucks");
+const { sequelize } = require("./models/models");
+const { expressCspHeader, INLINE, SELF } = require("express-csp-header");
+// const { initSocket } = require("./connection/socket_module.js");
+const { initSocket } = require("./connection/socket.js");
+const indexRouter = require('./routes/index.js');
+
+//
 
 dotenv.config();
 
@@ -22,23 +22,35 @@ async function startServer() {
   const corsOption = {
     credentials: true, //header에 Access_Controal-Allow-Credentials을 허락함
   };
-
-  //moduels
+  //Moduels
   app.use(express.json());
   app.use(helmet());
   app.use(cors(corsOption));
-  app.use(morgan('dev'));
+  app.use(morgan("dev"));
+  app.set("view engine", "html");
+  nunjucks.configure("views", {
+    express: app,
+    watch: true,
+  });
+  app.use(express.static(path.join(__dirname, "public")));
+  app.use(
+    //Content Security Policy 해결
+    expressCspHeader({
+      directives: {
+        "script-src": [
+          SELF,
+          INLINE,
+          "https://cdnjs.cloudflare.com",
+          "https://unpkg.com",
+        ],
+      },
+    })
+  );
 
-  //라우터
-  app.use('/api/auth', userRouter);
-  app.use('/api/request', requestRouter);
-  app.use('/api/estimate', estimateRouter);
-  app.use('/api/translator', profileRouter);
-  app.use('/api/review', reviewRouter);
-  app.use('/api/chatroom', roomRouter);
-  app.use('/api/chatroom/chat', chatRouter);
+  //Router
+  app.use("/api", indexRouter);
 
-  //예외 처리
+  //Exception
   app.use((req, res, next) => {
     const error = `${req.method} ${req.url} 라우터가 존재하지 않습니다.`;
     res.status(404).json(error);
@@ -52,8 +64,11 @@ async function startServer() {
   await sequelize.sync({
     force: false,
   });
-  console.log('Server is started!');
+  console.log("Server is started!");
   const server = app.listen(process.env.PORT);
+  // initSocket(server); //Socket 초기화
+  initSocket(server, app);
+
   return server;
 }
 

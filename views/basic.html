@@ -1,0 +1,31 @@
+{% extends 'layout.html' %} {% block content %}
+
+<div id="chat-list">
+  {% for chat in data %}
+  <div>{{chat.dataValues.chat}}</div>
+  {% endfor %}
+</div>
+
+<!-- <div>F12를 눌러 console 탭과 network 탭을 확인하세요.</div> -->
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io("/chat");
+  //url 주소를 서버에 넘김
+  socket.emit("get-url", window.location.href);
+
+  //chat 생성시 실행
+  socket.on("add-chat", function (data) {
+    console.log("add-chat");
+    let temp = `<div>${data.chat}</div>`;
+    document.querySelector("#chat-list").append(temp);
+  });
+
+  socket.on("join", function (data) {
+    console.log(data);
+  });
+
+  socket.on("exit", function (data) {
+    console.log(data);
+  });
+</script>
+{% endblock %}

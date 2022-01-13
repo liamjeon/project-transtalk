@@ -1,11 +1,6 @@
+const { getSocketIO } = require("../../connection/socket.js");
 const ChatRepository = require("./chat.data.js");
-const RequestRepository = require('../request/request.data.js');
-const RoomRepository = require("../room/room.data.js");
-
 const chatRepository = new ChatRepository();
-const requestRepository = new RequestRepository();
-const roomRepository = new RoomRepository();
-
 
 class ChatController {
   async htmlCreate(req, res, next) {
@@ -14,6 +9,10 @@ class ChatController {
     const { chat } = req.body;
     try {
       const result = await chatRepository.create(userId, chat, roomId);
+
+      // console.log(result.dataValues);
+      getSocketIO().of("/chat").to(roomId).emit("add-chat", result.dataValues);
+
       return res.status(201).json(result);
     } catch (error) {
       return res.sendStatus(400);
@@ -23,8 +22,10 @@ class ChatController {
   async htmlGetAll(req, res, next) {
     const roomId = req.params.roomId;
     try {
-      const result = await chatRepository.getByRoomId(14);
-      return res.status(201).json({ data: result });
+      const result = await chatRepository.getByRoomId(roomId);
+
+      return res.render("basic", { data: result });
+      // return res.status(201).json({ data: result });
     } catch (error) {
       return res.sendStatus(400);
     }

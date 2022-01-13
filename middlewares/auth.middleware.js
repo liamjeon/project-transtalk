@@ -72,7 +72,7 @@ async function isAuthBoth(req, res, next) {
 
 function getToken(authHeader) {
   if (!(authHeader && authHeader.startsWith("Bearer"))) {
-    return res.sendStatus(401);
+    return console.log('Token이 없습니다.');
   }
   return authHeader.split(" ")[1];
 }
