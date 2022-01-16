@@ -10,6 +10,6 @@ router.get("/kakao/logout", userController.kakaoLogout);
 
 //개발자
 router.post("/dev/signup", userController.devSignup);
-router.get("/dev/login", userController.devLogin);
+router.post("/dev/login", userController.devLogin);
 
 module.exports = router;

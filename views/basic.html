@@ -20,10 +20,12 @@
     document.querySelector("#chat-list").append(temp);
   });
 
+  //채팅 참가했을 때
   socket.on("join", function (data) {
     console.log(data);
   });
 
+  //채팅 나갔을 때
   socket.on("exit", function (data) {
     console.log(data);
   });

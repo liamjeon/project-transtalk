@@ -23,9 +23,9 @@ async function startServer() {
     credentials: true, //header에 Access_Controal-Allow-Credentials을 허락함
   };
   //Moduels
+  app.use(cors());
   app.use(express.json());
   app.use(helmet());
-  app.use(cors(corsOption));
   app.use(morgan("dev"));
   app.set("view engine", "html");
   nunjucks.configure("views", {
@@ -38,7 +38,7 @@ async function startServer() {
     expressCspHeader({
       directives: {
         "script-src": [
-          SELF,
+          SELF, 
           INLINE,
           "https://cdnjs.cloudflare.com",
           "https://unpkg.com",
