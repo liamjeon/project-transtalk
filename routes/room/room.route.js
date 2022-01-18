@@ -10,7 +10,7 @@ const {
     isAuthBoth,
   } = require("../../middlewares/auth.middleware.js");
 
-router.post('/:requestId',isAuthBoth, roomController.htmlCreate);
+router.post('/:estimateId',isAuthBoth, roomController.htmlCreate);
 router.get('/client',isAuthBoth, roomController.htmlGetAllForClient);
 router.get('/translator',isAuthBoth, roomController.htmlGetAllForTranslator);
 

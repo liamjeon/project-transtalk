@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.belongsTo(models.Request, {foreignKey:'requestId'});
       this.belongsTo(models.User, {foreignKey:'translatorId'});
+      this.hasMany(models.Room, {foreignKey: "estimateId"});
     }
   };
   Estimate.init({

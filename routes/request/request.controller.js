@@ -17,9 +17,11 @@ class RequestController {
         phoneNumber: req.body.phoneNumber,
         email: req.body.email,
         fileUrl: req.body.fileUrl,
+        youtubeUrl: req.body.youtubeUrl,
         needs: req.body.needs,
         isText: req.body.isText,
         clientId,
+        translatorId: 0,
       });
       return res.status(201).json({ data: result });
     } catch (error) {

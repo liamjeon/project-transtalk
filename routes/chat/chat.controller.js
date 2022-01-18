@@ -24,8 +24,8 @@ class ChatController {
     try {
       const result = await chatRepository.getByRoomId(roomId);
 
-      return res.render("basic", { data: result });
-      // return res.status(201).json({ data: result });
+      // return res.render("basic", { data: result });
+      return res.status(201).json({ data: result });
     } catch (error) {
       return res.sendStatus(400);
     }

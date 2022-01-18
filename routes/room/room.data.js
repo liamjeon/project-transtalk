@@ -1,11 +1,12 @@
-const { Room, Request, Profile } = require("../../models/models");
+const { Room, Request, Profile, User, Estimate } = require("../../models/models");
 
 class RoomRepository {
-  async create(requestId) {
+  async create(estimateId, requestId) {
     const lastChatDate = 0;
     const isReadClient = true;
     const isReadTranslator = true;
     return Room.create({
+      estimateId,
       requestId,
       lastChatDate,
       isReadClient,
@@ -13,8 +14,8 @@ class RoomRepository {
     });
   }
 
-  async getByRequestId(requestId) {
-    return Room.findOne({ where: { requestId } });
+  async getByEstimateId(estimateId) {
+    return Room.findOne({ where: { estimateId } });
   }
 
   async getByClientId(clientId) {
@@ -23,11 +24,12 @@ class RoomRepository {
         {
           model: Request,
           where: { clientId },
-          attributes:[
-            'confirmedTranslaotr','status',
-          ]
+          attributes: ["status"],
         },
       ],
+      include: [{ 
+        model: Estimate,
+      }],
     });
   }
 
@@ -37,9 +39,8 @@ class RoomRepository {
         {
           model: Request,
           where: { translatorId },
-          attributes:[
-            'confirmedTranslaotr','status',
-          ]
+          attributes: ["status"],
+          include: [{ model: User, attributes: ["username"] }],
         },
       ],
     });

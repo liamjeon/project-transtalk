@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.hasMany(models.Chat, {foreignKey: "roomId"});
       this.belongsTo(models.Request, {foreignKey: "requestId"});
+      this.belongsTo(models.Estimate, {foreignKey: "estimateId"});
     }
   };
   Room.init({
@@ -27,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
     isReadTranslator:{
       type: DataTypes.BOOLEAN,
       allowNull: true,
+    },
+    requestId:{
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
   }, {
     sequelize,
