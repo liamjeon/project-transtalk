@@ -31,8 +31,7 @@ class RequestController {
 
   async htmlGetRequestListById(req, res, next) {
     try {
-      //   const userId = req.locals.user.id;
-      const userId = 1; //임시
+        const userId = res.locals.user.id;
       const result = await requestRepository.getByStatusAndId(userId);
       return res.status(200).json({ data: result });
     } catch (error) {
