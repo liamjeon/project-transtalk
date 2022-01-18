@@ -45,6 +45,10 @@ class RoomRepository {
       ],
     });
   }
+
+  async getById(id) {
+    return Room.findByPk(id);
+  }
 }
 
 module.exports = RoomRepository;
