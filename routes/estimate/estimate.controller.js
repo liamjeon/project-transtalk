@@ -64,10 +64,7 @@ class EstimateController {
       const requestId = req.params.requestId;
       const translatorId = res.locals.user.id;
       const request = await requestRepository.getById(requestId);
-      const esmimate = await estimateRepository.getByRequestIdAndTranslatorId(
-        requestId,
-        translatorId
-      );
+      const esmimate = await estimateRepository.getByRequestId( requestId );
       const exRoom = await roomRepository.getByEstimateId(esmimate.dataValues.id);
       let roomId;
       if(!exRoom){

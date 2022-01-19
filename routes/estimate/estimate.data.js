@@ -40,6 +40,10 @@ class EstimateRepository {
     return Estimate.findOne({ where: { requestId, translatorId } });
   }
 
+  async getByRequestId(requestId) {
+    return Estimate.findOne({ where: { requestId } });
+  }
+
   async getAllWithRequestByTranslatorId(translatorId) {
     return Estimate.findAll({
       where: { translatorId },
