@@ -80,8 +80,24 @@ class RequestController {
   //견적 클릭시 RequestId 에 해당하는 견적(Estimate) 상세 정보를 가져옴
   async htmlGetEstimateByRequestId(req, res, next) {
     const estimateId = req.params.estimateId;
+    const requestId = req.params.requestId;
+    const userId = res.locals.user.id;
     try {
-      //ToDo 예외처리
+      //[예외처리]요청한 번역요청이 없을 떄
+      const request = await requestRepository.getById(requestId);
+      if (!request) {
+        return res
+          .status(400)
+          .json({ message: "해당하는 번역요청이 없습니다." });
+      }
+      //[예외처리]요청한 번역요청이 나의 소유가 아닐 때
+      if (userId !== request.clientId) {
+        return res
+          .status(400)
+          .json({ message: "내가 요청한 번역이 아닙니다." });
+      }
+
+      //[예외처리]요청한 견적이 없을 때
       let result = await estimateRepository.getByEsimateId(estimateId);
       if (!result) {
         return res
