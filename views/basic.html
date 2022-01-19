@@ -21,6 +21,8 @@
   });
 
   //채팅 참가했을 때
+  socket.emit("join", { message: "소켓 연결 성공" });
+
   socket.on("join", function (data) {
     console.log(data);
   });

@@ -19,6 +19,7 @@ function initSocket(server, app) {
       roomId = msg.split("/")[6];
       socket.join(roomId);
       getSocketIO().of("/chat").emit("join", `${roomId}번 번역요청 채팅 시작`);
+      console.log(`${roomId}번 번역요청 채팅 시작`);
     });
 
     //chat 네임스페이스 종료 (채팅방에서 나갔을때)
@@ -26,6 +27,7 @@ function initSocket(server, app) {
       console.log("chat 네임스페이스 접속 해제");
       socket.leave(roomId);
       getSocketIO().of("/chat").emit("exit", `${roomId}번 번역요청 채팅에서 나갔습니다.`);
+      console.log(`${roomId}번 번역요청 채팅에서 나갔습니다.`);
     });
   });
 }
