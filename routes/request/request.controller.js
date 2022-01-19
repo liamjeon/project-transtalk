@@ -76,10 +76,11 @@ class RequestController {
     }
   }
 
-  //견적 리스트 클릭시 RequestId 에 해당하는 견적(Estimate) 리스트를 받아옴
+  //견적 클릭시 RequestId 에 해당하는 견적(Estimate) 상세 정보를 가져옴
   async htmlGetEstimateByRequestId(req, res, next) {
     const estimateId = req.params.estimateId;
     try {
+      //ToDo 예외처리
       let result = await estimateRepository.getByEsimateId(estimateId);
       //데이터 가공
       const estimate = {

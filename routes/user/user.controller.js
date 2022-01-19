@@ -57,7 +57,7 @@ class UserController {
       const jwtToken = jwt.sign({ id: kakaoId }, process.env.JWT_SECRETKEY, {
         expiresIn: process.env.JWT_EXPRIERSDAYS,
       });
-      return res.status(200).json({ token: jwtToken });
+      return res.status(200).json({ token: jwtToken, auth });
     } catch (error) {
       return res.sendStatus(401);
     }

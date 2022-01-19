@@ -1,7 +1,9 @@
 const EstimateRepository = require("./estimate.data.js");
 const RequestRepository = require("../request/request.data.js");
+const RoomRepository = require('../room/room.data.js');
 const requestRepository = new RequestRepository();
 const estimateRepository = new EstimateRepository();
+const roomRepository = new RoomRepository();
 const { getDateFormat } = require("../../middlewares/middlewares.js");
 
 class EstimateController {
@@ -66,7 +68,13 @@ class EstimateController {
         requestId,
         translatorId
       );
-      console.log(esmimate);
+      // console.log(esmimate.dataValues.id);
+      const exRoom = await roomRepository.getByEstimateId(esmimate.dataValues.id);
+      let roomId = exRoom.dataValues.id;
+      console.log(roomId);
+      if(!exRoom){
+        roomId  = 0;
+      }
 
       //필요 정보들 필터링, 개인 정보 제외(email, phoneNumber)
       const result = {
@@ -81,6 +89,7 @@ class EstimateController {
         isText: request.isText,
         status: request.status,
         ...esmimate.dataValues,
+        roomId: roomId,
       };
       return res.status(200).json({ data: result });
     } catch (error) {
