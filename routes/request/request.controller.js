@@ -106,6 +106,13 @@ class RequestController {
           .status(400)
           .json({ message: "해당하는 견적 요청이 없습니다." });
       }
+      //[예외처리] 견적이 관계된 번역요청에 속하지 않은 경우
+      console.log(result.requestId, requestId);
+      if(result.requestId != requestId){
+        return res
+          .status(400)
+          .json({ message: `${requestId}번 번역요청에 속하지 않는 견적입니다.` });
+      }
 
       const room = await roomRepository.getByEstimateId(estimateId);
       let roomId = 0;
