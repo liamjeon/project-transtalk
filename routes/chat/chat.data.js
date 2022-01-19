@@ -8,22 +8,12 @@ class ChatRepository {
   async getByRoomId(roomId) {
     return Chat.findAll({
       where: { roomId },
-      // include: [
-      //   {
-      //     model: User,
-      //     attributes: ["auth", "username"],
-      //   },
-      //   {
-      //     model: Room,
-      //     attributes: ['requestId'],
-      //     include: [
-      //       {
-      //         model: Request,
-      //         attributes: ['clientId','translatorId'],
-      //       },
-      //     ],
-      //   },
-      // ],
+      include: [
+        {
+          model: User,
+          attributes: ["auth", "username"],
+        },
+      ]
     });
   }
 }
