@@ -1,8 +1,9 @@
 const RequestRepository = require("./request.data.js");
-const requestRepository = new RequestRepository();
-
 const EstimateRepository = require("../estimate/estimate.data.js");
+const ProfileRepository = require("../profile/profile.data.js");
+const requestRepository = new RequestRepository();
 const estimateRepository = new EstimateRepository();
+const profileRepository = new ProfileRepository();
 
 class RequestController {
   async htmlCreateRequest(req, res, next) {
@@ -31,7 +32,7 @@ class RequestController {
 
   async htmlGetRequestListById(req, res, next) {
     try {
-        const userId = res.locals.user.id;
+      const userId = res.locals.user.id;
       const result = await requestRepository.getByStatusAndId(userId);
       return res.status(200).json({ data: result });
     } catch (error) {
@@ -82,8 +83,10 @@ class RequestController {
     try {
       //ToDo 예외처리
       let result = await estimateRepository.getByEsimateId(estimateId);
-      if(!result){
-        return res.status(400).json({message: "해당하는 견적 요청이 없습니다."});
+      if (!result) {
+        return res
+          .status(400)
+          .json({ message: "해당하는 견적 요청이 없습니다." });
       }
       //데이터 가공
       const estimate = {
@@ -102,14 +105,17 @@ class RequestController {
     }
   }
 
+  //[번역가] 번역 요청 상태 "완료(done)"으로 변경
   async htmlUpdateStatusToDone(req, res, next) {
     const requestId = req.params.requestId;
     const translatorId = res.locals.user.id;
     try {
       let request = await requestRepository.getById(requestId);
       //내가 번역 작업중인 번역요청이 아니라면
-      if(request.translatorId !== translatorId) {
-        return res.status(403).json({ message: "내가 진행중인 번역 작업이 아닙니다." });
+      if (request.translatorId !== translatorId) {
+        return res
+          .status(403)
+          .json({ message: "내가 진행중인 번역 작업이 아닙니다." });
       }
       //번역 요청 상태 done으로 업데이트
       let result = await requestRepository.updateStatus(
@@ -118,6 +124,47 @@ class RequestController {
         requestId
       );
       return res.status(200).json({ message: "번역 작업 완료(done)" });
+    } catch (error) {
+      return res.sendStatus(400);
+    }
+  }
+
+  //[클라이언트] 번역가 확정
+  async htmlconfirmTranslator(req, res, next) {
+    const requestId = req.params.requestId;
+    const estimateId = req.params.estimateId;
+    const userId = res.locals.user.id;
+
+    try {
+      const request = await requestRepository.getById(requestId);
+      //나의 번역요청이 아닐떄 리턴
+      if (request.clientId !== userId) {
+        return res
+          .status(403)
+          .json({ message: "내가 요청한 번역이 아닙니다." });
+      }
+      const estimate = await estimateRepository.getById(estimateId);
+      const profile = await profileRepository.getByTranslatorId(
+        estimate.translatorId
+      );
+
+      //번역 요청에 번역가 정보 업데이트
+      await requestRepository.confirmTranslator(
+        requestId,
+        profile.name,
+        estimate.confirmedDate,
+        estimate.offerPrice,
+        estimate.translatorId
+      );
+
+      //번역 요청 상태를 processing 으로 변경
+      await requestRepository.updateStatus(
+        "processing",
+        estimate.translatorId,
+        requestId
+      );
+
+      return res.status(201).json({ message: "번역가(견적) 확정!" });
     } catch (error) {
       return res.sendStatus(400);
     }

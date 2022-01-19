@@ -24,6 +24,12 @@ router.get(
   isAuthForClient,
   requestController.htmlGetEstimateByRequestId
 );
+//번역가 확정하기
+router.post(
+  "/list/:requestId/:estimateId",
+  isAuthForClient,
+  requestController.htmlconfirmTranslator
+);
 
 //번역 작업완료,  번역요청 상태를 done으로 변경
 router.post(

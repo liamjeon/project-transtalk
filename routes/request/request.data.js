@@ -65,7 +65,23 @@ class RequestRepository {
   }
 
   async updateStatus(status, translatorId, requestId) {
-    return Request.update({ status, translatorId }, { where: { id: requestId } });
+    return Request.update(
+      { status, translatorId },
+      { where: { id: requestId } }
+    );
+  }
+
+  async confirmTranslator(
+    requestId,
+    confirmedTranslator,
+    confirmedDate,
+    confirmedPrice,
+    translatorId
+  ) {
+    return Request.update(
+      { confirmedTranslator, confirmedDate, confirmedPrice, translatorId },
+      { where: { id: requestId } }
+    );
   }
 }
 
