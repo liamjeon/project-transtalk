@@ -16,6 +16,10 @@ class UserRepository {
   async getByKakaoId(id) {
     return User.findOne({ where: { snsId: id } });
   }
+
+  async getById(id){
+    return User.findByPk(id);
+  }
 }
 
 module.exports = UserRepository;

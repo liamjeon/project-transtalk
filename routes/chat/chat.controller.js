@@ -1,8 +1,10 @@
 const { getSocketIO } = require("../../connection/socket.js");
 const ChatRepository = require("./chat.data.js");
 const RoomRepository = require("../room/room.data.js");
+const UserRepository = require("../user/user.data.js");
 const chatRepository = new ChatRepository();
 const roomRepository = new RoomRepository();
+const userRepository = new UserRepository();
 
 class ChatController {
   async htmlCreate(req, res, next) {
@@ -14,10 +16,19 @@ class ChatController {
       if(!exRoom){
         return res.status(400).json({message:"채팅방이 존재하지 않습니다."})
       }
+      const user = await userRepository.getById(userId);
+      const chatResult = await chatRepository.create(userId, chat, roomId);
 
-      const result = await chatRepository.create(userId, chat, roomId);
+      const result = {
+        User:{
+          username: user.username,
+          auth: user.auth,
+        },
+        ...chatResult.dataValues,
+      }
+
       //소켓 통신
-      getSocketIO().of("/chat").to(roomId).emit("add-chat", result.dataValues);
+      getSocketIO().of("/chat").to(Number(roomId)).emit("add-chat", result);
 
       return res.status(201).json(result);
     } catch (error) {

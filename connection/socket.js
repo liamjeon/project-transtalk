@@ -8,15 +8,14 @@ function initSocket(server, app) {
       origin: "*",
     },
   });
-  const chat = io.of("/chat");
+  const chat = io.of("/chat"); 
 
   let roomId;
   chat.on("connection", (socket) => {
     console.log("chat 네임스페이스 연결!");
-    //Todo
-    //socket handshake 값에서 정보 가져오기.
-    socket.on("get-url", async (msg) => {
-      roomId = msg.split("/")[6];
+
+    socket.on("join-room", async (data) => {
+      roomId = data.roomId;
       socket.join(roomId);
       getSocketIO().of("/chat").emit("join", `${roomId}번 번역요청 채팅 시작`);
       console.log(`${roomId}번 번역요청 채팅 시작`);
