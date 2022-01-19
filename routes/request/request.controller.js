@@ -82,6 +82,9 @@ class RequestController {
     try {
       //ToDo 예외처리
       let result = await estimateRepository.getByEsimateId(estimateId);
+      if(!result){
+        return res.status(400).json({message: "해당하는 견적 요청이 없습니다."});
+      }
       //데이터 가공
       const estimate = {
         offerPrice: result.offerPrice,
