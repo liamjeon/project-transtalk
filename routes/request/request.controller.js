@@ -1,9 +1,11 @@
 const RequestRepository = require("./request.data.js");
 const EstimateRepository = require("../estimate/estimate.data.js");
 const ProfileRepository = require("../profile/profile.data.js");
+const RoomRepository = require('../room/room.data.js');
 const requestRepository = new RequestRepository();
 const estimateRepository = new EstimateRepository();
 const profileRepository = new ProfileRepository();
+const roomRepository = new RoomRepository();
 
 class RequestController {
   async htmlCreateRequest(req, res, next) {
@@ -104,6 +106,13 @@ class RequestController {
           .status(400)
           .json({ message: "해당하는 견적 요청이 없습니다." });
       }
+
+      const room = await roomRepository.getByEstimateId(estimateId);
+      let roomId = 0;
+      if(room){
+        roomId = room.id;
+      }
+      
       //데이터 가공
       const estimate = {
         offerPrice: result.offerPrice,
@@ -112,6 +121,8 @@ class RequestController {
         sendDate: result.sendDate,
         translatorId: result.translatorId,
         requestId: result.requestId,
+        status: request.status,
+        roomId,
         ...result.User.Profile.dataValues,
       };
 
