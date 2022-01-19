@@ -57,7 +57,7 @@ class EstimateController {
     }
   }
 
-  //견적 리스트 클릭시 번역요청정보 받아옴
+  //견적 리스트 클릭시 번역요청상세 정보 받아옴
   async htmlGetRequestById(req, res, next) {
     try {
       //   const userId = req.locals.user.id;
@@ -68,14 +68,14 @@ class EstimateController {
         requestId,
         translatorId
       );
-      // console.log(esmimate.dataValues.id);
       const exRoom = await roomRepository.getByEstimateId(esmimate.dataValues.id);
-      let roomId = exRoom.dataValues.id;
-      console.log(roomId);
+      let roomId;
       if(!exRoom){
         roomId  = 0;
       }
-
+      else{
+        roomId = exRoom.dataValues.id;
+      }
       //필요 정보들 필터링, 개인 정보 제외(email, phoneNumber)
       const result = {
         requestId: request.id,
