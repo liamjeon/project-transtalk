@@ -7,6 +7,11 @@ class RequestRepository {
   async getByStatusAndId(userId) {
     return Request.findAll({ where: { status: "ready", clientId: userId } });
   }
+
+  async getByClientId(userId) {
+    return Request.findAll({ where: { clientId: userId } });
+  }
+
   async getByStatus(status) {
     return Request.findAll({
       where: { status },
