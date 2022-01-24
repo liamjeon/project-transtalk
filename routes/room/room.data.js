@@ -1,4 +1,10 @@
-const { Room, Request, Profile, User, Estimate } = require("../../models/models");
+const {
+  Room,
+  Request,
+  Profile,
+  User,
+  Estimate,
+} = require("../../models/models");
 
 class RoomRepository {
   async create(estimateId, requestId) {
@@ -27,9 +33,11 @@ class RoomRepository {
           attributes: ["status"],
         },
       ],
-      include: [{ 
-        model: Estimate,
-      }],
+      include: [
+        {
+          model: Estimate,
+        },
+      ],
     });
   }
 
@@ -37,10 +45,22 @@ class RoomRepository {
     return Room.findAll({
       include: [
         {
-          model: Request,
+          model: Estimate,
           where: { translatorId },
-          attributes: ["status"],
-          include: [{ model: User, attributes: ["username"] }],
+          attributes: ["id"],
+          include: [
+            {
+              //
+              model: Request,
+              attributes: ["id"],
+              include: [
+                {
+                  model: User,
+                  attributes: ["username"],
+                },
+              ],
+            },
+          ],
         },
       ],
     });

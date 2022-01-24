@@ -29,6 +29,7 @@ class ChatController {
 
       //소켓 통신
       getSocketIO().of("/chat").to(Number(roomId)).emit("add-chat", result);
+      console.log(result);
 
       return res.status(201).json(result);
     } catch (error) {

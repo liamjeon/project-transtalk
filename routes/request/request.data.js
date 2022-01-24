@@ -68,6 +68,17 @@ class RequestRepository {
   async getById(id) {
     return Request.findByPk(id);
   }
+  async getByIdWithName(id) {
+    return Request.findOne({
+      where: { id },
+      include: [
+        {
+          model: User,
+          attributes: ["username"],
+        },
+      ],
+    });
+  }
 
   async updateStatus(status, translatorId, requestId) {
     return Request.update(

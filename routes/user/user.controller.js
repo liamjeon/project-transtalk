@@ -131,7 +131,7 @@ class UserController {
       });
       return res.status(200).json({ token: jwtToken, auth: exUser.auth });
     } catch (error) {
-      return res.sendStatus(400);
+      return res.sendStatus(40);
     }
   }
 }

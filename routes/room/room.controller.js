@@ -2,7 +2,7 @@ const RoomRepository = require("./room.data.js");
 const RequestRepository = require("../request/request.data.js");
 const EstimateRepository = require("../estimate/estimate.data.js");
 const ProfileRepository = require("../profile/profile.data.js");
-const room = require('../../models/models/room.js');
+const room = require("../../models/models/room.js");
 const requestRepository = new RequestRepository();
 const roomRepository = new RoomRepository();
 const estimateRepository = new EstimateRepository();
@@ -42,15 +42,13 @@ class RoomController {
     const clientId = res.locals.user.id;
     try {
       const rooms = await roomRepository.getByClientId(clientId);
-      // const room = rooms[0].dataValues;
-      // const translatorId = rooms[0].Estimate.dataValues.translatorId;
-      // const profile = await profileRepository.getByTranslatorId(translatorId);
+      const room = rooms[0].dataValues;
+      const translatorId = rooms[0].Estimate.dataValues.translatorId;
+      const profile = await profileRepository.getByTranslatorId(translatorId);
 
       let result = [];
       for(let i=0; i<rooms.length; i++){
         let room = rooms[i];
-        let translatorId = room.dataValues.Estimate.dataValues.translatorId;
-        let profile = await profileRepository.getByTranslatorId(translatorId);
 
         result.push({
           id: room.id,
@@ -74,9 +72,10 @@ class RoomController {
     console.log(translatorId);
     try {
       const result = await roomRepository.getByTranslatorId(translatorId);
+
       return res.status(201).json(result);
     } catch (error) {
-      return res.sendStatus(400);
+      return res.sendStatus(40);
     }
   }
 }

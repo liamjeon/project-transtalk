@@ -63,15 +63,17 @@ class EstimateController {
       //   const userId = req.locals.user.id;
       const requestId = req.params.requestId;
       const translatorId = res.locals.user.id;
-      const request = await requestRepository.getById(requestId);
+      const request = await requestRepository.getByIdWithName(requestId);
       const esmimate = await estimateRepository.getByRequestId( requestId );
       const exRoom = await roomRepository.getByEstimateId(esmimate.dataValues.id);
-      let roomId;
+      let roomId, roomCreateAt;
       if(!exRoom){
         roomId  = 0;
+        roomCreateAt = 0;
       }
       else{
         roomId = exRoom.dataValues.id;
+        roomCreateAt = exRoom.createdAt;
       }
       //필요 정보들 필터링, 개인 정보 제외(email, phoneNumber)
       const result = {
@@ -87,6 +89,8 @@ class EstimateController {
         status: request.status,
         ...esmimate.dataValues,
         roomId: roomId,
+        roomCreateAt: roomCreateAt,
+        username: request.User.username,
       };
       return res.status(200).json({ data: result });
     } catch (error) {
