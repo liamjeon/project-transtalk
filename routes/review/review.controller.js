@@ -40,11 +40,8 @@ class ReviewController {
   }
 
   async htmlGetReview(req, res, next) {
-    const requestId = req.params.requestId;
+    const translatorId = req.params.translatorId;
     try {
-      const request = await requestRepository.getById(requestId);
-      const translatorId = request.translatorId;
-
       const result = await reviewRepository.getAllByTranslatorId(translatorId);
       return res.status(201).json({ data: result });
     } catch (error) {
