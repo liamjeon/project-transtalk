@@ -6,13 +6,13 @@ const userRepository = new UserRepository();
 
 class UserController {
   async kakaoLogin(req, res, next) {
-    ///1. 인가 코드 요청
+    //1. 인가 코드 요청
     const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.KAKAO_KEY}&redirect_uri=${process.env.KAKAO_REDIRECT_URL}&response_type=code`;
     res.redirect(kakaoAuthURL);
   }
 
-  async kakaoCallback(req, res) {
-    console.log(req.app.locals.userType);
+  async kakaoCallback(req, res, next) {
+    console.log(req.params.code)
     try {
       //2. 토근 발행. 카카오서버는 인가 코드를 설정한 Callback URL로 Redirect 해준다.
       const kakaoToken = await axios({
@@ -25,7 +25,7 @@ class UserController {
           grant_type: "authorization_code", //authorization_code로 고정
           client_id: process.env.KAKAO_KEY, //앱 REST API 키
           redirectUri: process.env.KAKAO_REDIRECT_URL, //인가 코드가 리다이렉트된 URI
-          code: req.query.code, //인가 코드 받기 요청으로 얻은 인가 코드
+          code: req.params.code, //인가 코드 받기 요청으로 얻은 인가 코드
         }),
       });
 
@@ -40,21 +40,35 @@ class UserController {
       });
 
       // 4. JWT Token 생성 후 프론트에 전달.
+      let approve = true; //계정 승인 여부
       const kakaoId = kakaoUser.data.id;
       const exUser = await userRepository.getByKakaoId(kakaoId);
-      let approve;
       const auth = req.app.locals.userType;
+
+      //DB에 없는 유저라면 자동 회원가입
       if (!exUser) {
-        //DB에 없는 유저라면 자동 회원가입
-        if (auth === "client") approve = true;
-        else approve = true; //번역가는 승인을 받아야 됨. 임시로 true;
-        
+        //번역가는 최초 가입시 승인여부가 False, 승인을 받아야만 로그인 가능
+        if(auth == "translator"){
+          approve = false; //번역가는 승인을 받아야 됨. 임시로 true;
+        }
         //username : kakaiId 마지막 4자리
         const username = (kakaoId).toString().slice(0,4);
-        
         await userRepository.create(username, kakaoId, auth, "kakao", approve);
       } else {
         await userRepository.updateAuth(kakaoId, auth);
+      }
+
+      //[예외처리]번역가 승인 받지 않는 유저라면 로그인 불가.
+      if(exUser.auth == "translator" && exUser.approve == false){
+        return res.status(401).json({ message : "번역가 승인 후 로그인 가능합니다." });
+      }
+      //[예외처리] 번역가가 클라이언트로 로그인할 경우
+      if(auth == "translator" && exUser.auth == "client"){
+        return res.status(401).json({ message : "번역가로 로그인할 수 없습니다." });
+      }
+      //[예외처리] 클라이언트가 번역가로 로그인할 경우
+      if(auth == "client" && exUser.auth == "translator"){
+        return res.status(401).json({ message : "번역가로 로그인하세요." });
       }
 
       //5. JWT token 생성 후

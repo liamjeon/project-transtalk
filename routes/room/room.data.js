@@ -33,7 +33,6 @@ class RoomRepository {
           attributes: ["status"],
         },
       ],
-  
     });
   }
 
