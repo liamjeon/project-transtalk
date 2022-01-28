@@ -33,11 +33,7 @@ class RoomRepository {
           attributes: ["status"],
         },
       ],
-      include: [
-        {
-          model: Estimate,
-        },
-      ],
+  
     });
   }
 

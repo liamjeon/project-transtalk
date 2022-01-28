@@ -42,13 +42,15 @@ class RoomController {
     const clientId = res.locals.user.id;
     try {
       const rooms = await roomRepository.getByClientId(clientId);
-      const room = rooms[0].dataValues;
-      const translatorId = rooms[0].Estimate.dataValues.translatorId;
-      const profile = await profileRepository.getByTranslatorId(translatorId);
+      // const room = rooms[0].dataValues;
+      // const translatorId = rooms[0].Estimate.dataValues.translatorId;
+      // const profile = await profileRepository.getByTranslatorId(translatorId);
 
       let result = [];
       for(let i=0; i<rooms.length; i++){
         let room = rooms[i];
+        let estimate = await estimateRepository.getById(room.estimateId);
+        let profile = await profileRepository.getByTranslatorId(estimate.dataValues.translatorId);
 
         result.push({
           id: room.id,
