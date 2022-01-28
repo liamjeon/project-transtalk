@@ -156,6 +156,9 @@ class RequestController {
       }
       //번역 요청 상태 done으로 업데이트
       await requestRepository.updateStatus("done", parseInt(requestId));
+      //번역가 프로필 > totalTrans 증가
+      await profileRepository.updateTotalTrans(translatorId);
+
       return res.status(200).json({ message: "번역 작업 완료(done)" });
     } catch (error) {
       return res.sendStatus(400);
