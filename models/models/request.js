@@ -63,7 +63,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
     },
     needs: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(2048),
       allowNull: true,
     },
     youtubeUrl: {
