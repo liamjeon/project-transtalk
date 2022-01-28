@@ -80,9 +80,9 @@ class RequestRepository {
     });
   }
 
-  async updateStatus(status, translatorId, requestId) {
+  async updateStatus(status, requestId) {
     return Request.update(
-      { status, translatorId },
+      { status },
       { where: { id: requestId } }
     );
   }

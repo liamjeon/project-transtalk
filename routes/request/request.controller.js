@@ -1,7 +1,7 @@
 const RequestRepository = require("./request.data.js");
 const EstimateRepository = require("../estimate/estimate.data.js");
 const ProfileRepository = require("../profile/profile.data.js");
-const RoomRepository = require('../room/room.data.js');
+const RoomRepository = require("../room/room.data.js");
 const requestRepository = new RequestRepository();
 const estimateRepository = new EstimateRepository();
 const profileRepository = new ProfileRepository();
@@ -108,18 +108,20 @@ class RequestController {
       }
       //[예외처리] 견적이 관계된 번역요청에 속하지 않은 경우
       console.log(result.requestId, requestId);
-      if(result.requestId != requestId){
+      if (result.requestId != requestId) {
         return res
           .status(400)
-          .json({ message: `${requestId}번 번역요청에 속하지 않는 견적입니다.` });
+          .json({
+            message: `${requestId}번 번역요청에 속하지 않는 견적입니다.`,
+          });
       }
 
       const room = await roomRepository.getByEstimateId(estimateId);
       let roomId = 0;
-      if(room){
+      if (room) {
         roomId = room.id;
       }
-      
+
       //데이터 가공
       const estimate = {
         offerPrice: result.offerPrice,
@@ -143,20 +145,17 @@ class RequestController {
   async htmlUpdateStatusToDone(req, res, next) {
     const requestId = req.params.requestId;
     const translatorId = res.locals.user.id;
+
     try {
       let request = await requestRepository.getById(requestId);
-      //내가 번역 작업중인 번역요청이 아니라면
+      //[예외처리]내가 번역 작업중인 번역요청이 아니라면
       if (request.translatorId !== translatorId) {
         return res
           .status(403)
           .json({ message: "내가 진행중인 번역 작업이 아닙니다." });
       }
       //번역 요청 상태 done으로 업데이트
-      let result = await requestRepository.updateStatus(
-        "done",
-        translatorId,
-        requestId
-      );
+      await requestRepository.updateStatus("done", parseInt(requestId));
       return res.status(200).json({ message: "번역 작업 완료(done)" });
     } catch (error) {
       return res.sendStatus(400);
