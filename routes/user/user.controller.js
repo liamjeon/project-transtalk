@@ -48,7 +48,11 @@ class UserController {
         //DB에 없는 유저라면 자동 회원가입
         if (auth === "client") approve = true;
         else approve = true; //번역가는 승인을 받아야 됨. 임시로 true;
-        await userRepository.create("미지정", kakaoId, auth, "kakao", approve);
+        
+        //username : kakaiId 마지막 4자리
+        const username = (kakaoId).toString().slice(0,4);
+        
+        await userRepository.create(username, kakaoId, auth, "kakao", approve);
       } else {
         await userRepository.updateAuth(kakaoId, auth);
       }
