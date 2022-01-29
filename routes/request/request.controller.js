@@ -117,9 +117,14 @@ class RequestController {
       }
 
       const room = await roomRepository.getByEstimateId(estimateId);
-      let roomId = 0;
+      let roomId, roomCreatedAt;
       if (room) {
         roomId = room.id;
+        roomCreatedAt = room.createdAt;
+      }
+      else{
+        roomId = 0;
+        roomCreatedAt = 0;
       }
 
       //데이터 가공
@@ -132,6 +137,7 @@ class RequestController {
         requestId: result.requestId,
         status: request.status,
         roomId,
+        roomCreatedAt,
         ...result.User.Profile.dataValues,
       };
 
