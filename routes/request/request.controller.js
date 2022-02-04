@@ -32,7 +32,7 @@ class RequestController {
     }
   }
 
-  async htmlGetRequestListById(req, res, next) {
+  async   htmlGetRequestListById(req, res, next) {
     try {
       const userId = res.locals.user.id;
       const result = await requestRepository.getByClientId(userId);
@@ -180,11 +180,11 @@ class RequestController {
     try {
       const request = await requestRepository.getById(requestId);
       //나의 번역요청이 아닐떄 리턴
-      if (request.clientId !== userId) {
-        return res
-          .status(403)
-          .json({ message: "내가 요청한 번역이 아닙니다." });
-      }
+      // if (request.clientId !== userId) {
+      //   return res
+      //     .status(403)
+      //     .json({ message: "내가 요청한 번역이 아닙니다." });
+      // }
       const estimate = await estimateRepository.getById(estimateId);
       const profile = await profileRepository.getByTranslatorId(
         estimate.translatorId
@@ -199,10 +199,10 @@ class RequestController {
         estimate.translatorId
       );
 
+      console.log(Number(requestId),estimate.translatorId)
       //번역 요청 상태를 processing 으로 변경
       await requestRepository.updateStatus(
         "processing",
-        estimate.translatorId,
         requestId
       );
 

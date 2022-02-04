@@ -64,7 +64,7 @@ class EstimateController {
       const requestId = req.params.requestId;
       const translatorId = res.locals.user.id;
       const request = await requestRepository.getByIdWithName(requestId);
-      const esmimate = await estimateRepository.getByRequestId( requestId );
+      const esmimate = await estimateRepository.getByRequestIdAndTranslatorId( requestId, translatorId );
       const exRoom = await roomRepository.getByEstimateId(esmimate.dataValues.id);
       let roomId, roomCreateAt;
       if(!exRoom){
@@ -89,7 +89,7 @@ class EstimateController {
         status: request.status,
         ...esmimate.dataValues,
         roomId: roomId,
-        roomCreateAt: roomCreateAt,
+        roomCreateAt: roomCreateAt, 
         username: request.User.username,
       };
       return res.status(200).json({ data: result });

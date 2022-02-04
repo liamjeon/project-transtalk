@@ -84,7 +84,7 @@ class RequestRepository {
     return Request.update(
       { status },
       { where: { id: requestId } }
-    );
+    );  
   }
 
   async confirmTranslator(

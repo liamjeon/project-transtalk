@@ -3,7 +3,7 @@ const qs = require("qs"); // 쿼리스트링 인코딩
 const axios = require("axios");
 const UserRepository = require("./user.data.js");
 const userRepository = new UserRepository();
-const ProfileRepository = require('../profile/profile.data.js');
+const ProfileRepository = require("../profile/profile.data.js");
 const profileRepository = new ProfileRepository();
 
 class UserController {
@@ -57,27 +57,27 @@ class UserController {
         //번역가는 최초 가입시 승인여부가 False, 승인을 받아야만 로그인 가능
         if (auth == "translator") {
           approve = false; //번역가는 승인을 받아야 됨. 임시로 true;
-        } 
+        }
         //username : kakaiId 마지막 4자리
-        const username = kakaoId.toString().slice(0, 4);
+        const username = kakaoId.toString().slice(5, 4);
         await userRepository.create(username, kakaoId, auth, "kakao", approve);
-      } 
-
-      //[예외처리]번역가 승인 받지 않는 유저라면 로그인 불가.
-      if (exUser.auth == "translator" && exUser.approve == false) {
-        return res
-          .status(401)
-          .json({ message: "번역가 승인 후 로그인 가능합니다." });
-      }
-      //[예외처리] 클라이언트가 번역가로로 로그인할 경우
-      if (auth == "translator" && exUser.auth == "client") {
-        return res
-          .status(401)
-          .json({ message: "번역가로 로그인할 수 없습니다." });
-      }
-      //[예외처리] 번역가가 클라이언트로 로그인할 경우
-      if (auth == "client" && exUser.auth == "translator") {
-        return res.status(401).json({ message: "번역가로 로그인하세요." });
+      } else {
+        //[예외처리]번역가 승인 받지 않는 유저라면 로그인 불가.
+        if (exUser.auth == "translator" && exUser.approve == false) {
+          return res
+            .status(401)
+            .json({ message: "번역가 승인 후 로그인 가능합니다." });
+        }
+        //[예외처리] 클라이언트가 번역가로로 로그인할 경우
+        if (auth == "translator" && exUser.auth == "client") {
+          return res
+            .status(401)
+            .json({ message: "번역가로 로그인할 수 없습니다." });
+        }
+        //[예외처리] 번역가가 클라이언트로 로그인할 경우
+        if (auth == "client" && exUser.auth == "translator") {
+          return res.status(401).json({ message: "번역가로 로그인하세요." });
+        }
       }
 
       //5. JWT token 생성 후
@@ -85,16 +85,23 @@ class UserController {
         expiresIn: process.env.JWT_EXPRIERSDAYS,
       });
 
-      if(exUser.auth == 'translator'){
-        const exProfile = await profileRepository.getByTranslatorId(exUser.id);
-        if(exProfile){
-          return res.status(200).json({ token: jwtToken, auth, isProfile: true });
-        }
-        else{
-          return res.status(200).json({ token: jwtToken, auth, isProfile: false });
+      if (exUser) {
+        if (exUser.auth == "translator") {
+          const exProfile = await profileRepository.getByTranslatorId(
+            exUser.id
+          );
+          if (exProfile) {
+            return res
+              .status(200)
+              .json({ token: jwtToken, auth, isProfile: true, approve });
+          } else {
+            return res
+              .status(200)
+              .json({ token: jwtToken, auth, isProfile: false, approve });
+          }
         }
       }
-      return res.status(200).json({ token: jwtToken, auth });
+      return res.status(200).json({ token: jwtToken, auth, approve });
     } catch (error) {
       return res.sendStatus(401);
     }
