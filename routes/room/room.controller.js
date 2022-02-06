@@ -61,6 +61,7 @@ class RoomController {
           createdAt: room.createdAt,
           estimateId: room.estimateId,
           translatorName: profile.dataValues.name,
+          profileUrl: profile.dataValues.profileUrl,
         });
       }
       return res.status(201).json(result);

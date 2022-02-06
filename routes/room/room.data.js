@@ -47,7 +47,7 @@ class RoomRepository {
             {
               //
               model: Request,
-              attributes: ["id"],
+              attributes: ["id", "field", "beforeLanguage", "afterLanguage"],
               include: [
                 {
                   model: User,
