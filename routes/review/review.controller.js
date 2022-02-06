@@ -18,11 +18,11 @@ class ReviewController {
     try {
       const request = await requestRepository.getById(requestId);
       const exUser = await userRepository.getById(clientId);
-      // const exReview = await reviewRepository.getByRequestId(requestId);
+      const exReview = await reviewRepository.getByRequestId(requestId);
       const translatorId = request.translatorId;
 
       //[예외처리]번역 완료 후 리뷰 작성 가능합니다.
-      if (request.status === "ready") {
+      if (request.status === "ready" || request.status === "processing") {
         return res
           .status(400)
           .json({ message: "번역 완료 후 리뷰 작성 가능합니다." });
@@ -35,7 +35,7 @@ class ReviewController {
           .json({ message: "이미 리뷰를 등록했습니다." });
       }
 
-      //리뷰 생성
+      // //리뷰 생성
       const result = await reviewRepository.create(
         score,
         comment,
@@ -45,9 +45,10 @@ class ReviewController {
         translatorId,
         exUser.username
       );
-      //번역가 프로필정보 > 리뷰 수, 리뷰 평균 점수 업데이트
+      // //번역가 프로필정보 > 리뷰 수, 리뷰 평균 점수 업데이트
       await profileRepository.updateReviewInfo(translatorId, score);
 
+      // const result = [];
       return res.status(201).json(result);
     } catch (error) {
       return res.status(400).json({ message: error });

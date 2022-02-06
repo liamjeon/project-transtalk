@@ -180,12 +180,12 @@ class RequestController {
 
     try {
       const request = await requestRepository.getById(requestId);
-      // 나의 번역요청이 아닐떄 리턴
-      if (request.clientId !== userId) {
-        return res
-          .status(403)
-          .json({ message: "내가 요청한 번역이 아닙니다." });
-      }
+      // // 나의 번역요청이 아닐떄 리턴
+      // if (request.clientId !== userId) {
+      //   return res
+      //     .status(403)
+      //     .json({ message: "내가 요청한 번역이 아닙니다." });
+      // }
       const estimate = await estimateRepository.getById(estimateId);
       const profile = await profileRepository.getByTranslatorId(
         estimate.translatorId
@@ -198,7 +198,7 @@ class RequestController {
         estimate.confirmedDate,
         estimate.offerPrice,
         estimate.translatorId,
-        estimateId
+        estimate.id
       );
 
       console.log(Number(requestId),estimate.translatorId)
