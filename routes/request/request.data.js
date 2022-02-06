@@ -27,6 +27,7 @@ class RequestRepository {
         "isText",
         "status",
         "createdAt",
+        "estimateId"
       ],
       include: [
         {
@@ -92,10 +93,11 @@ class RequestRepository {
     confirmedTranslator,
     confirmedDate,
     confirmedPrice,
-    translatorId
+    translatorId,
+    estimateId
   ) {
     return Request.update(
-      { confirmedTranslator, confirmedDate, confirmedPrice, translatorId },
+      { confirmedTranslator, confirmedDate, confirmedPrice, translatorId, estimateId },
       { where: { id: requestId } }
     );
   }
