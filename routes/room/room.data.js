@@ -1,3 +1,4 @@
+const { getDateFormat, getDateFormatDetail} = require("../../middlewares/middlewares.js");
 const {
   Room,
   Request,
@@ -63,6 +64,14 @@ class RoomRepository {
 
   async getById(id) {
     return Room.findByPk(id);
+  }
+
+  
+  async updateTime(roomId) {
+    return Room.update(
+      { lastChatDate: getDateFormatDetail() },
+      { where: { id: roomId } }
+    );
   }
 }
 
